@@ -5,11 +5,12 @@ import constants as c
 
 class ProductFetcher:
 
-    def __init__(self, page_size=1):
+    def __init__(self, page_size=1000):
         self.categories = c.CATEGORIES_LIST
         self.page_size = page_size
+        self.data_list = []
 
-    def get_products(self):
+    def client(self):
         for category in self.categories:
             parameters = {
                 "action": "process",
@@ -22,11 +23,9 @@ class ProductFetcher:
             }
             r = requests.get(c.URL, parameters)
             data = r.json()
-            with open('data.json', 'w') as f:
-                json.dump(data, f, indent=4)
+            raw_product_list = self.data_list.append(data)
 
-            print(data["tag_0"])
+            return raw_product_list
 
 
-api = ProductFetcher()
-api.get_products()
+

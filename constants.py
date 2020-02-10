@@ -10,3 +10,11 @@ CATEGORIES_LIST = [
     "Boissons"
     ]
 
+TAGS = [
+    "product_name",
+    "brands",
+    "nutrition_grade_fr",
+    "url",
+    "stores"
+]
+
