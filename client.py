@@ -1,14 +1,12 @@
 import requests
-import json
 import constants as c
 
 
 class ProductFetcher:
-
+    """Class that fetch a raw products list from OpenFoodFacts"""
     def __init__(self, page_size=1000):
         self.categories = c.CATEGORIES_LIST
         self.page_size = page_size
-        self.data_list = []
 
     def client(self):
         for category in self.categories:
@@ -23,9 +21,9 @@ class ProductFetcher:
             }
             r = requests.get(c.URL, parameters)
             data = r.json()
-            raw_product_list = self.data_list.append(data)
-
-            return raw_product_list
-
+            # print(data["products"][0]["categories"])
+            return data
 
 
+# api = ProductFetcher(1)
+# api.client()
