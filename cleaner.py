@@ -6,19 +6,28 @@ class Cleaner:
     """Class to filter the data before putting it in the database"""
 
     def __init__(self):
-        self.data = client.ProductFetcher(1)
+        self.data = client.ProductFetcher()
         self.data_sorted = []
 
-    def cleaner(self):
+    def clean(self, products):
         data = self.data
         data_products = data.client()
-        data_parse = data_products["products"]
+        products_cleaned = self.data_sorted
+        
+        for element in products_cleaned:
+            if self.is_valid(element):
+                products_cleaned.append(element)
 
-        for element in data_parse:
-            if all(tags_ok == element["categories"] for tags_ok in c.TAGS):
-                products_cleaned = self.data_sorted.append(element)
-                print(products_cleaned)
+        return products_cleaned
+            
+    def is_valid(self, product):
+        for tag in c.TAGS:
+            if tag not in product:
+                return False
+            else:
+                if not product[tag]:
+                    return False
+        return True
 
-
-cleaner_class = Cleaner()
-cleaner_class.cleaner()
+if __name__ == "__main__":
+    pass
