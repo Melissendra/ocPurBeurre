@@ -23,6 +23,3 @@ class ProductFetcher:
             data = r.json()
             return data
 
-
-# api = ProductFetcher(1)
-# api.fetch_products()

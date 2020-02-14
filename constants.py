@@ -11,11 +11,9 @@ CATEGORIES_LIST = [
     ]
 
 TAGS = [
-    "categories"
-    "product_name",
+    "categories",
     "brands",
     "nutrition_grade_fr",
     "url",
     "stores"
 ]
-

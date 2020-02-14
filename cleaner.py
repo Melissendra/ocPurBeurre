@@ -26,7 +26,7 @@ class Cleaner:
 
 
 if __name__ == "__main__":
-    data = client.ProductFetcher()
+    data = client.ProductFetcher(1)
     products_data = data.fetch_products()
     clean_product = Cleaner()
-    print(clean_product.clean(products_data))
+    print(clean_product.clean(products_data["products"]))
