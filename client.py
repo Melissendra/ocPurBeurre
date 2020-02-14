@@ -8,7 +8,7 @@ class ProductFetcher:
         self.categories = c.CATEGORIES_LIST
         self.page_size = page_size
 
-    def client(self):
+    def fetch_products(self):
         for category in self.categories:
             parameters = {
                 "action": "process",
@@ -21,9 +21,8 @@ class ProductFetcher:
             }
             r = requests.get(c.URL, parameters)
             data = r.json()
-            # print(data["products"][0]["categories"])
             return data
 
 
 # api = ProductFetcher(1)
-# api.client()
+# api.fetch_products()
