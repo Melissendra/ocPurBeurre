@@ -1,4 +1,3 @@
-import client
 import constants as c
 
 
@@ -24,9 +23,3 @@ class Cleaner:
                     return False
         return True
 
-
-if __name__ == "__main__":
-    data = client.ProductFetcher(1)
-    products_data = data.fetch_products()
-    clean_product = Cleaner()
-    print(clean_product.clean(products_data["products"]))
