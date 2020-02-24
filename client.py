@@ -20,6 +20,6 @@ class ProductFetcher:
                 "json": 1
             }
             r = requests.get(c.URL, parameters)
-            data = r.json()
+            data = r.json()["products"]
             return data
 

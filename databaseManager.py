@@ -1,6 +1,7 @@
 import records
 import client
 import cleaner
+import constants as c
 
 db = records.Database()
 
@@ -9,47 +10,55 @@ class ProductsManager:
     def __init__(self, db):
         self.db = db
 
-    def create_little_table(self, name_tab, name_id, name_col):
-        """Method to create the database's small tables """
-        self.db.query(
-            f'CREATE TABLE IF NOT EXISTS {name_tab}({name_id} INT NOT NULL AUTO_INCREMENT, {name_col} VARCHAR(150) NOT NULL UNIQUE, PRIMARY KEY({name_id}))'
-            )
+    def create_tables(self):
+        with open("tables.sql") as sql_file:
+            content = sql_file.read()
 
-    def create_big_table(self, name_tab, name_id, name_col1, name_col2, name_col3, name_col4, name_col5):
-        """Method to create the database's big tables"""
-        self.db.query(
-            f'CREATE TABLE IF NOT EXISTS {name_tab}({name_id} BIGINT NOT NULL, {name_col1} VARCHAR(255) NOT NULL UNIQUE, {name_col2} VARCHAR(150) NOT NULL UNIQUE, {name_col3} CHAR(1) NOT NULL, {name_col4} VARCHAR(150) NOT NULL UNIQUE, {name_col5} VARCHAR(150) NOT NULL, PRIMARY KEY({name_id}))'
-        ) 
+        sql_queries = content.split(";")
+        for query in sql_queries:
+            self.db.query(query)
 
-    def drop_table(self, name_tab):
-        """Method to delete table when necessary"""
-        self.db.query(
-            f'DROP TABLE IF EXISTS {name_tab}'
-        )
+    def drop_tables(self, name):
+        self.db.query(f"DROP TABLE IF EXISTS {name}")
 
-    def insert_data(self, products, tab_name):
-        """Method to insert datas in database's tables"""
+    def insert_nutriscore(self, nutri_data):
+        for nutri in nutri_data:
+            nutriscore_letter = nutri["nutrition_grades"]
 
-        for product in products:
-            product_data = product["products"]
-            product_id = product_data["id"]
-            cat_name = product_data["categories"]
-            product_name = product_data["brands"]
-            product_score = product_data["nutrition_score_fr"]
-            product_store = product_data["stores"]
-            product_link = product_data["url"]
+            self.db.query("INSERT IGNORE INTO nutriscore(nutriscore_letter) VALUES (:nutriscore_letter)",
+                          nutriscore_letter=nutriscore_letter)
 
-            self.db.query(f'INSERT INTO {tab_name}(product_id, cat_name) VALUES(:product_id, :cat_name)', product_id=product_id, cat_name=cat_name)
+    # def insert_categories(self, category):
+    #     for cat in c.CATEGORIES_LIST:
+    #         cat_list = category.strip(" ")
+    #         name = cat[cat_list]
+    #         self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
+    #                       name=name)
+
+    def insert_products(self, products_data):
+        for product in products_data:
+            name = product["product_name"]
+            id = product["code"]
+            link = product["url"]
+            nutriscore_id = self.db.query("INSERT INTO product(nutriscore_id) VALUES ((SELECT id FROM nutriscore WHERE id IN (SELECT id FROM nutriscore)))")
+            self.db.query("INSERT INTO product(id, name, link, nutriscore_id) "
+                          "VALUES (:id, :name, :link, :nutriscore_id)", id=id, name=name,  link=link, nutriscore_id=nutriscore_id)
+
 
 
 if __name__ == '__main__':
-    api = client.ProductFetcher()
+    api = client.ProductFetcher(3)
     products = api.fetch_products()
     cleaner = cleaner.Cleaner()
     clean_products = cleaner.clean(products)
     manager = ProductsManager(db)
-
-    manager.drop_table("categories")
-    manager.create_little_table("categories", "category_id", "category_name")
-    manager.create_big_table("products", " product_id", "category_name", "product_brand", "nutriscore", "stores", "product_links")
-    manager.insert_data(clean_products, "categories")
+    manager.drop_tables("product_category")
+    manager.drop_tables("product_store")
+    manager.drop_tables("favorite")
+    manager.drop_tables("category")
+    manager.drop_tables("product")
+    manager.drop_tables("nutriscore")
+    manager.drop_tables("store")
+    manager.create_tables()
+    manager.insert_nutriscore(clean_products)
+    manager.insert_products(clean_products)
