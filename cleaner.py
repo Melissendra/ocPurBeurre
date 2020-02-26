@@ -14,7 +14,8 @@ class Cleaner:
                 products_cleaned.append(element)
         return products_cleaned
 
-    def is_valid(self, product):
+    @staticmethod
+    def is_valid(product):
         for tag in c.TAGS:
             if tag not in product:
                 return False
