@@ -38,7 +38,7 @@ class ProductsManager:
             # category_list = cat["categories"].split(",")
             # for category in category_list:
             self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
-                      name=category_list)
+                          name=category_list)
 
     def insert_products(self, products):
         for product in products:
@@ -50,7 +50,7 @@ class ProductsManager:
             self.db.query("INSERT INTO product(id, name, link, nutriscore_id) "
                           "VALUES (:id, :name, :link, (SELECT id FROM nutriscore "
                           "WHERE nutriscore_letter= :nutri))",
-                          id=id, name=name,  link=link, nutri=nutriscore)
+                          id=id, name=name, link=link, nutri=nutriscore)
 
     def insert_stores(self, products):
         for store in products:
@@ -61,12 +61,14 @@ class ProductsManager:
     def insert_product_cat(self, products):
         for product in products:
             product_name = product["product_name"]
-            cat_name = product["categories"]
-            self.db.query("INSERT INTO product_category(product_id, category_id) "
-                          "VALUES((SELECT id FROM product "
-                          "WHERE name=:product_name), (SELECT id "
-                          "FROM category WHERE name=:cat_name))",
-                          product_name=product_name, cat_name=cat_name)
+            cat_name = product["categories"].split(',')
+            for cat in cat_name:
+                category = product[cat]
+                self.db.query("INSERT INTO product_category(product_id, category_id) "
+                              "VALUES((SELECT id FROM product "
+                              "WHERE name=:product_name), (SELECT id "
+                              "FROM category WHERE name=:cat_name))",
+                              product_name=product_name, cat_name=category)
 
     def insert_product_store(self, products):
         for product in products:
@@ -87,15 +89,6 @@ class ProductsManager:
         self.insert_stores(products)
         self.insert_product_store(products)
         self.insert_product_cat(products)
-
-    # def insert_favorite(self, products):
-    #     for product in products:
-    #         product_name = product["product_name"]
-    #         self.db.query("INSERT INTO favorite(product_original_id, product_substitute_id) "
-    #                       "VALUES((SELECT id FROM product "
-    #                       "WHERE name=:product_name), (SELECT id "
-    #                       "FROM product WHERE name=:product_name))",
-    #                       product_name=product_name)
 
 
 if __name__ == '__main__':
