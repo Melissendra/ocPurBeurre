@@ -34,11 +34,10 @@ class ProductsManager:
 
     def insert_categories(self, products):
         for cat in products:
-            category_list = cat["categories"]
-            # category_list = cat["categories"].split(",")
-            # for category in category_list:
-            self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
-                          name=category_list)
+            category_list = cat["categories"].split(",")
+            for category in category_list:
+                self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
+                              name=category)
 
     def insert_products(self, products):
         for product in products:
@@ -54,33 +53,34 @@ class ProductsManager:
 
     def insert_stores(self, products):
         for store in products:
-            store_name = store["stores"]
-            self.db.query("INSERT INTO store(store_name)"
-                          "VALUES(:store)", store=store_name)
+            store_name = store["stores"].split(",")
+            for store_list in store_name:
+                self.db.query("INSERT IGNORE INTO store(store_name)"
+                              "VALUES(:store)", store=store_list)
 
     def insert_product_cat(self, products):
         for product in products:
             product_name = product["product_name"]
-            cat_name = product["categories"].split(',')
+            cat_name = product["categories"].split(",")
             for cat in cat_name:
-                category = product[cat]
                 self.db.query("INSERT INTO product_category(product_id, category_id) "
                               "VALUES((SELECT id FROM product "
                               "WHERE name=:product_name), (SELECT id "
                               "FROM category WHERE name=:cat_name))",
-                              product_name=product_name, cat_name=category)
+                              product_name=product_name, cat_name=cat)
 
     def insert_product_store(self, products):
         for product in products:
             product_name = product["product_name"]
-            store_name = product["stores"]
-            self.db.query("INSERT INTO product_store(product_id, store_id) "
-                          "VALUES((SELECT id "
-                          "FROM product "
-                          "WHERE name=:product_name), "
-                          "(SELECT store_id "
-                          "FROM store "
-                          "WHERE store_name=:store_name))", product_name=product_name, store_name=store_name)
+            store_name = product["stores"].split(",")
+            for store in store_name:
+                self.db.query("INSERT INTO product_store(product_id, store_id) "
+                              "VALUES((SELECT id "
+                              "FROM product "
+                              "WHERE name=:product_name), "
+                              "(SELECT store_id "
+                              "FROM store "
+                              "WHERE store_name=:store_name))", product_name=product_name, store_name=store)
 
     def insert_all_table(self, products):
         self.insert_nutriscore(products)
