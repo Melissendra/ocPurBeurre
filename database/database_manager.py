@@ -1,6 +1,6 @@
 import records
-import cleaner
-import client
+from .cleaner import Cleaner
+from .client import ProductFetcher
 
 db = records.Database()
 
@@ -10,7 +10,7 @@ class ProductsManager:
         self.db = db
 
     def create_tables(self):
-        with open("tables.sql") as sql_file:
+        with open("database/tables.sql") as sql_file:
             content = sql_file.read()
 
         sql_queries = content.split(";")
@@ -82,7 +82,7 @@ class ProductsManager:
                               "FROM store "
                               "WHERE store_name=:store_name))", product_name=product_name, store_name=store)
 
-    def insert_all_table(self, products):
+    def insert_all_tables(self, products):
         self.insert_nutriscore(products)
         self.insert_categories(products)
         self.insert_products(products)
@@ -90,14 +90,23 @@ class ProductsManager:
         self.insert_product_store(products)
         self.insert_product_cat(products)
 
+    def show_categories(self):
+        cat_name = self.db.query("SELECT name FROM category ORDER BY id ")
+        for cat in cat_name:
+            print(cat.name)
+
+    def show_products(self):
+        pass
+
 
 if __name__ == '__main__':
-    api = client.ProductFetcher(3)
+    api = ProductFetcher(3)
     products = api.fetch_products()
-    cleaner = cleaner.Cleaner()
+    cleaner = Cleaner()
     clean_products = cleaner.clean(products)
     manager = ProductsManager(db)
     manager.drop_all_tables()
 
     manager.create_tables()
-    manager.insert_all_table(clean_products)
+    manager.insert_all_tables(clean_products)
+    manager.show_categories()
