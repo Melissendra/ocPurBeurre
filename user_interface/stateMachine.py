@@ -1,4 +1,4 @@
-class AbstractStateMachine:
+class StateMachine:
     """State class uses to create the user's menu path"""
 
     def __init__(self):

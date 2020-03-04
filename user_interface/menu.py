@@ -1,0 +1,45 @@
+from user_interface import menu_choice as mc
+
+
+class Menu:
+    """Class for showing one or several choices to the user
+        title(str): title to display up to the menu
+        choices(dict): dictionary having the choices options for the user
+    """
+
+    def __init__(self, title):
+        """Initialization of the Menu"""
+        self.title = title
+        self.choices = {}
+
+    def add(self, key, choice, next):
+        """we add new option for the user
+            key(str) key that allow the user to choose his option
+            choice(object): option to offer to the user
+            next(function): method to execute if the choice is made by the user
+        """
+        key = key.lower().strip()
+        if key:
+            self.choices[key] = mc.MenuChoice(choice, next_state=next, menu=self)
+        return self
+
+    def __str__(self):
+        """format the menu for its display to the user"""
+        lines = []
+        lines.append(f"{self.title}")
+        lines.append("")
+        for key, value in self.choices.items():
+            lines.append(f"{key}. {value}")
+        lines.append("")
+        lines.append(">>> ")
+        return "/n".join(lines)
+
+    def render(self):
+        """Displays the menu to the user and waits an answer
+            The menu is display again until the user doesn't make a valid choice
+        """
+
+        while True:
+            answer = input(self).lower().strip()
+            if answer in self.choices:
+                return self.choices[answer]

@@ -11,7 +11,7 @@ class Product:
     def get_categories(self):
         cat_name = self.db.query("SELECT name FROM category ORDER BY id ")
         for cat in cat_name:
-            category_name = cat.name.lower().strip("de:")
+            category_name = cat.name.lower()
             print(category_name)
             # return categories_name
 
