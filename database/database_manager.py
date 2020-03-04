@@ -1,6 +1,6 @@
 import records
-from .cleaner import Cleaner
-from .client import ProductFetcher
+from database import cleaner, client
+
 
 db = records.Database()
 
@@ -63,7 +63,7 @@ class ProductsManager:
             product_name = product["product_name"]
             cat_name = product["categories"].split(",")
             for cat in cat_name:
-                self.db.query("INSERT INTO product_category(product_id, category_id) "
+                self.db.query("INSERT IGNORE INTO product_category(product_id, category_id) "
                               "VALUES((SELECT id FROM product "
                               "WHERE name=:product_name), (SELECT id "
                               "FROM category WHERE name=:cat_name))",
@@ -74,7 +74,7 @@ class ProductsManager:
             product_name = product["product_name"]
             store_name = product["stores"].split(",")
             for store in store_name:
-                self.db.query("INSERT INTO product_store(product_id, store_id) "
+                self.db.query("INSERT IGNORE INTO product_store(product_id, store_id) "
                               "VALUES((SELECT id "
                               "FROM product "
                               "WHERE name=:product_name), "
@@ -90,23 +90,15 @@ class ProductsManager:
         self.insert_product_store(products)
         self.insert_product_cat(products)
 
-    def show_categories(self):
-        cat_name = self.db.query("SELECT name FROM category ORDER BY id ")
-        for cat in cat_name:
-            print(cat.name)
-
-    def show_products(self):
-        pass
-
 
 if __name__ == '__main__':
-    api = ProductFetcher(3)
+    api = client.ProductFetcher()
     products = api.fetch_products()
-    cleaner = Cleaner()
+    cleaner = cleaner.Cleaner()
     clean_products = cleaner.clean(products)
     manager = ProductsManager(db)
     manager.drop_all_tables()
 
     manager.create_tables()
     manager.insert_all_tables(clean_products)
-    manager.show_categories()
+
