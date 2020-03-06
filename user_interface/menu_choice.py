@@ -1,5 +1,6 @@
 class MenuChoice:
-    """Class that depict a menu choice define by un object and the next state if a choice is made
+    """Class that depict a menu choice define by un object and the next state 
+        if a choice is made
         Attributes:
             item(object): object which owns an __str__ method for the display
             next (function): function or method implementing the next menu

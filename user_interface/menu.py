@@ -1,4 +1,4 @@
-from user_interface import menu_choice as mc
+from .menu_choice import MenuChoice
 
 
 class Menu:
@@ -20,7 +20,7 @@ class Menu:
         """
         key = key.lower().strip()
         if key:
-            self.choices[key] = mc.MenuChoice(choice, next_state=next, menu=self)
+            self.choices[key] = MenuChoice(choice, next_state=next, menu=self)
         return self
 
     def __str__(self):
@@ -32,11 +32,12 @@ class Menu:
             lines.append(f"{key}. {value}")
         lines.append("")
         lines.append(">>> ")
-        return "/n".join(lines)
+        return "\n".join(lines)
 
     def render(self):
         """Displays the menu to the user and waits an answer
-            The menu is display again until the user doesn't make a valid choice
+            The menu is display again until the user doesn't make a valid 
+            choice
         """
 
         while True:
