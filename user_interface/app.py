@@ -1,5 +1,6 @@
 from .stateMachine import StateMachine
 from .menu import Menu
+from database import category
 
 
 class App(StateMachine):
@@ -28,8 +29,22 @@ class App(StateMachine):
     def handle_category_option(self):
         return(
             Menu("Categories")
-            .add("1", "Retour à l'accueil")
+            .add("1", "Epicerie", self.handle_product("Epicerie"))
+            .add("2", "Pizza", self.handle_product)
+            .add("3", "Produits laitiers", self.handle_product)
+            .add("4", "Desserts", self.handle_product)
+            .add("5", "Boisson", self.handle_product)
+            .add("a", "Retour à l'accueil", self.handle_start)
+            .add("q", "Quitter", self.handle_quit)
+            .render()
         )
+
+    def handle_product(self, name):
+        cat = category.Category(name)
+        return cat
+
+    def handle_product_option(self):
+        pass
 
     def handle_option2(self):
         Menu("Produits substitués").add("1", "Revenir à l'accueil", self.handle_start).add("2", "Quitter", self.handle_quit)

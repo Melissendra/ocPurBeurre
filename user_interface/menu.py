@@ -25,9 +25,7 @@ class Menu:
 
     def __str__(self):
         """format the menu for its display to the user"""
-        lines = []
-        lines.append(f"{self.title}")
-        lines.append("")
+        lines = [f"{self.title}", ""]
         for key, value in self.choices.items():
             lines.append(f"{key}. {value}")
         lines.append("")

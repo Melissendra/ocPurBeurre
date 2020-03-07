@@ -38,7 +38,7 @@ class ProductsManager:
             for category in category_list:
                 if "de:" not in category and "en:" not in category:
                     self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
-                                name=category.replace("fr:", ""))
+                                  name=category.replace("fr:", ""))
 
     def insert_products(self, products):
         for product in products:
@@ -66,10 +66,10 @@ class ProductsManager:
             for cat in cat_name:
                 if "de:" not in cat and "en:" not in cat:
                     self.db.query("INSERT IGNORE INTO product_category(product_id, category_id) "
-                                    "VALUES((SELECT id FROM product "
-                                    "WHERE name=:product_name), (SELECT id "
-                                    "FROM category WHERE name=:cat_name))",
-                                    product_name=product_name, cat_name=cat.replace("fr:", ""))
+                                  "VALUES((SELECT id FROM product "
+                                  "WHERE name=:product_name), (SELECT id "
+                                  "FROM category WHERE name=:cat_name))",
+                                  product_name=product_name, cat_name=cat.replace("fr:", ""))
 
     def insert_product_store(self, products):
         for product in products:

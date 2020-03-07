@@ -21,5 +21,8 @@ class ProductFetcher:
             }
             r = requests.get(c.URL, parameters)
             data = r.json()["products"]
-            return data
-
+            products = []
+            for product in data:
+                product["categories"] = f"{category}, {product['categories']}"
+                products.append(product)
+            return products
