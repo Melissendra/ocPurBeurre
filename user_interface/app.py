@@ -1,6 +1,7 @@
 from .stateMachine import StateMachine
 from .menu import Menu
 from database import category
+from database import client, cleaner
 
 
 class App(StateMachine):
@@ -11,7 +12,8 @@ class App(StateMachine):
             Menu("Accueil")
             .add("1", "Quel aliment souhaitez vous remplacer?",
                  self.handle_option1)
-            .add("2", "Retrouver mes aliments substitués.", self.handle_option2)
+            .add("2", "Retrouver mes aliments substitués.",
+                 self.handle_option2)
             .add("q", "Quitter", self.handle_quit)
             .render()
         )
@@ -40,7 +42,11 @@ class App(StateMachine):
         )
 
     def handle_product(self, name):
-        cat = category.Category(name)
+        api = client.ProductFetcher()
+        products = api.fetch_products()
+        clean = cleaner.Cleaner()
+        clean_product = clean.clean(products)
+        cat = category.Category(clean_product, name)
         return cat
 
     def handle_product_option(self):
@@ -55,5 +61,6 @@ class App(StateMachine):
 
 
 if __name__ == "__main__":
+
     app = App()
     app.start()

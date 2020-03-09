@@ -10,5 +10,6 @@ class Category:
         self.cat_name = cat_name
 
     def get_product_by_category(self, name):
+        count = 0
         products = self.db.query(f"SELECT name, nutriscore_id, link FROM product WHERE name={name}")
         return products
