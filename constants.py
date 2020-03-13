@@ -18,3 +18,5 @@ TAGS = [
     "url",
     "stores"
 ]
+
+MAX_PROD = 2
