@@ -1,7 +1,9 @@
 from .stateMachine import StateMachine
 from .menu import Menu
-from database import category
-from database import client, cleaner
+from database.category import Category
+import records
+
+db = records.Database()
 
 
 class App(StateMachine):
@@ -22,7 +24,6 @@ class App(StateMachine):
         return(
             Menu("Quel aliment remplacer?")
             .add("1", "Sélectionner la catégorie", self.handle_category_option)
-            .add("2", "Sélectionner un aliment", self.handle_product_option)
             .add("3", "Accueil", self.handle_start)
             .add("q", "Quitter", self.handle_quit)
             .render()
@@ -31,7 +32,7 @@ class App(StateMachine):
     def handle_category_option(self):
         return(
             Menu("Categories")
-            .add("1", "Epicerie", self.handle_product("Epicerie"))
+            .add("1", "Epicerie", self.handle_product)
             .add("2", "Pizza", self.handle_product)
             .add("3", "Produits laitiers", self.handle_product)
             .add("4", "Desserts", self.handle_product)
@@ -41,13 +42,10 @@ class App(StateMachine):
             .render()
         )
 
-    def handle_product(self, name):
-        api = client.ProductFetcher()
-        products = api.fetch_products()
-        clean = cleaner.Cleaner()
-        clean_product = clean.clean(products)
-        cat = category.Category(clean_product, name)
-        return cat
+    def handle_product(self):
+        cat = Category(db)
+        products = cat.get_product_by_category("Epicerie")
+        print(products)
 
     def handle_product_option(self):
         pass

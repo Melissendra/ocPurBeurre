@@ -19,4 +19,4 @@ TAGS = [
     "stores"
 ]
 
-MAX_PROD = 2
+MAX_PROD = 40
