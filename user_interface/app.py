@@ -2,6 +2,7 @@ from .stateMachine import StateMachine
 from .menu import Menu
 from database.category import Category
 import records
+import constants as c
 
 db = records.Database()
 
@@ -30,21 +31,17 @@ class App(StateMachine):
         )
 
     def handle_category_option(self):
-        return(
-            Menu("Categories")
-            .add("1", "Epicerie", self.handle_product)
-            .add("2", "Pizza", self.handle_product)
-            .add("3", "Produits laitiers", self.handle_product)
-            .add("4", "Desserts", self.handle_product)
-            .add("5", "Boisson", self.handle_product)
-            .add("a", "Retour à l'accueil", self.handle_start)
-            .add("q", "Quitter", self.handle_quit)
+        cat_menu = Menu("Categories")
+        for i, category in enumerate(c.CATEGORIES_LIST):
+            cat_menu.add(f"{i+1}", category, self.handle_product)
+        cat_menu.add("a", "retour", self.handle_start)\
+            .add("q", "quitter", self.handle_quit)\
             .render()
-        )
+        return cat_menu
 
     def handle_product(self):
-        cat = Category(db)
-        products = cat.get_product_by_category("Epicerie")
+        cat = Category(db, "Epicerie")
+        products = cat.show_products()
         print(products)
 
     def handle_product_option(self):
