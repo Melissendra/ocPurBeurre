@@ -8,9 +8,6 @@ class Category:
     def __init__(self, db, cat_name):
         self.db = db
         self.cat_name = cat_name
-        self.product_name = ""
-        self.product_link = ""
-        self.nutriscore = ""
 
     def get_product_by_category(self):
         cat_name = self.cat_name
@@ -27,16 +24,16 @@ class Category:
                              "LIMIT 20", cat_name=cat_name)
         return rows
 
-    def show_products(self):
-        rows = self.get_product_by_category()
-        for i, r in enumerate(rows):
-            self.product_name = r.name
-            self.product_link = r.link
-            self.nutriscore = r.nutriscore_letter
-            result = f"{i+1}. {self.product_name}, {self.product_link}, {self.nutriscore}"
-            print(result)
+    # def show_products(self):
+    #     rows = self.get_product_by_category()
+    #     for i, r in enumerate(rows):
+    #         self.product_name = r.name
+    #         self.product_link = r.link
+    #         self.nutriscore = r.nutriscore_letter
+    #         result = f"{i+1}. {self.product_name}, {self.product_link}, {self.nutriscore}"
+    #         print(result)
 
 
 if __name__ == '__main__':
     get_prod_by_cat = Category(db, "Epicerie")
-    get_prod_by_cat.show_products()
+    # get_prod_by_cat.show_products()

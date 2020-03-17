@@ -31,18 +31,25 @@ class App(StateMachine):
         )
 
     def handle_category_option(self):
-        cat_menu = Menu("Categories")
+        cat_menu = Menu("Catégories")
         for i, category in enumerate(c.CATEGORIES_LIST):
-            cat_menu.add(f"{i+1}", category, self.handle_product)
-        cat_menu.add("a", "retour", self.handle_start)\
-            .add("q", "quitter", self.handle_quit)\
-            .render()
-        return cat_menu
+            cat_menu.add(f"{i+1}", f"{category}", self.show_products_by_category)
+        cat_menu.add("a", "Retour", self.handle_start).add("q", "Quitter", self.handle_quit)
+        return cat_menu.render()
 
-    def handle_product(self):
+    def show_products_by_category(self):
         cat = Category(db, "Epicerie")
-        products = cat.show_products()
-        print(products)
+        rows = cat.get_product_by_category()
+        products_menu = Menu("Epicerie >>> Produits ")
+        for i, r in enumerate(rows):
+            product_name = r.name
+            product_link = r.link
+            nutriscore = r.nutriscore_letter
+            products_menu.add(f"{i+1}", f"{product_name}, {nutriscore}", self.handle_category_option)
+        products_menu.add("a", "Retour à l'acceuil", self.handle_start)\
+            .add("q", "Quitter", self.handle_quit)
+
+        return products_menu.render
 
     def handle_product_option(self):
         pass
