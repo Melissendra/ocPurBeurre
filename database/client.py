@@ -14,7 +14,7 @@ class ProductFetcher:
                 "action": "process",
                 "tagtype_0": "categories",
                 "tag_contains_0": "contains",
-                "tag_0": category,
+                "tag_0": f"{category}",
                 "page_size": self.page_size,
                 "sort_by": "unique_scan_n",
                 "json": 1

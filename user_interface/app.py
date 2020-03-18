@@ -3,6 +3,10 @@ from .menu import Menu
 from database.category import Category
 import records
 import constants as c
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 db = records.Database()
 
@@ -10,7 +14,8 @@ db = records.Database()
 class App(StateMachine):
     """Class for the creation of a succession of menus"""
 
-    def handle_start(self):
+    def handle_start(self, entry=None, history=[]):
+        logger.debug("entry vaut %s", entry)
         return(
             Menu("Accueil")
             .add("1", "Quel aliment souhaitez vous remplacer?",
@@ -21,26 +26,29 @@ class App(StateMachine):
             .render()
         )
 
-    def handle_option1(self):
+    def handle_option1(self, entry, history):
+        logger.debug("entry vaut %s", entry)
         return(
             Menu("Quel aliment remplacer?")
             .add("1", "Sélectionner la catégorie", self.handle_category_option)
-            .add("3", "Accueil", self.handle_start)
+            .add("a", "Accueil", self.handle_start)
             .add("q", "Quitter", self.handle_quit)
             .render()
         )
 
-    def handle_category_option(self):
+    def handle_category_option(self, entry, history):
+        logger.debug("entry vaut %s", entry)
         cat_menu = Menu("Catégories")
         for i, category in enumerate(c.CATEGORIES_LIST):
             cat_menu.add(f"{i+1}", f"{category}", self.show_products_by_category)
         cat_menu.add("a", "Retour", self.handle_start).add("q", "Quitter", self.handle_quit)
         return cat_menu.render()
 
-    def show_products_by_category(self, category):
-        cat = Category(db, category)
+    def show_products_by_category(self, entry, history):
+        logger.debug("entry vaut %s", entry)
+        cat = Category(db, f"{entry}")
         rows = cat.get_product_by_category()
-        products_menu = Menu(f"{category} >>> Produits ")
+        products_menu = Menu(f"{entry} >>> Produits ")
         for n, r in enumerate(rows):
             product_name = r.name
             product_link = r.link
@@ -48,15 +56,15 @@ class App(StateMachine):
             products_menu.add(f"{n+1}", f"{product_name}, {nutriscore}", self.handle_category_option)
         products_menu.add("a", "Retour à l'acceuil", self.handle_start)\
             .add("q", "Quitter", self.handle_quit)
-        return products_menu.render
+        return products_menu.render()
 
     def handle_product_option(self):
         pass
 
-    def handle_option2(self):
+    def handle_option2(self, entry, history):
         Menu("Produits substitués").add("1", "Revenir à l'accueil", self.handle_start).add("2", "Quitter", self.handle_quit)
 
-    def handle_quit(self):
+    def handle_quit(self, entry, history):
         print("Au revoir")
         self.running = False
 

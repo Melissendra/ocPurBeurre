@@ -6,7 +6,7 @@ class MenuChoice:
             next (function): function or method implementing the next menu
     """
 
-    history = []
+    history = []   # histories of the choices which were maked
 
     def __init__(self, item, next_state, menu):
         self.item = item
@@ -20,4 +20,4 @@ class MenuChoice:
     def __call__(self):
         """Put the choice in the history's list and performs the next state"""
         self.history.append(self)
-        return self.next
+        return self.next(self, self.history)
