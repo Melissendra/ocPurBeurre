@@ -37,18 +37,17 @@ class App(StateMachine):
         cat_menu.add("a", "Retour", self.handle_start).add("q", "Quitter", self.handle_quit)
         return cat_menu.render()
 
-    def show_products_by_category(self):
-        cat = Category(db, "Epicerie")
+    def show_products_by_category(self, category):
+        cat = Category(db, category)
         rows = cat.get_product_by_category()
-        products_menu = Menu("Epicerie >>> Produits ")
-        for i, r in enumerate(rows):
+        products_menu = Menu(f"{category} >>> Produits ")
+        for n, r in enumerate(rows):
             product_name = r.name
             product_link = r.link
             nutriscore = r.nutriscore_letter
-            products_menu.add(f"{i+1}", f"{product_name}, {nutriscore}", self.handle_category_option)
+            products_menu.add(f"{n+1}", f"{product_name}, {nutriscore}", self.handle_category_option)
         products_menu.add("a", "Retour à l'acceuil", self.handle_start)\
             .add("q", "Quitter", self.handle_quit)
-
         return products_menu.render
 
     def handle_product_option(self):

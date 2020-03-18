@@ -8,6 +8,9 @@ class Category:
     def __init__(self, db, cat_name):
         self.db = db
         self.cat_name = cat_name
+        # self.product_name = ""
+        # self.product_link = ""
+        # self.nutriscore = ""
 
     def get_product_by_category(self):
         cat_name = self.cat_name
