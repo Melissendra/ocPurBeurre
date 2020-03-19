@@ -37,9 +37,9 @@ class ProductsManager:
         for cat in products:
             category_list = cat["categories"].split(",")
             for category in category_list:
-                if "de:" not in category and "en:" not in category:
-                    self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
-                                  name=category.replace("fr:", ""))
+                # if "de:" not in category and "en:" not in category:
+                self.db.query("INSERT IGNORE INTO category(name) VALUES (:name)",
+                              name=category.replace("fr:", ""))
 
     def insert_products(self, products):
         for product in products:
@@ -48,7 +48,7 @@ class ProductsManager:
             id = product["code"]
             link = product["url"]
 
-            self.db.query("INSERT INTO product(id, name, link, nutriscore_id) "
+            self.db.query("INSERT IGNORE INTO product(id, name, link, nutriscore_id) "
                           "VALUES (:id, :name, :link, (SELECT id FROM nutriscore "
                           "WHERE nutriscore_letter= :nutri))",
                           id=id, name=name, link=link, nutri=nutriscore)
@@ -62,28 +62,25 @@ class ProductsManager:
 
     def insert_product_cat(self, products):
         for product in products:
-            product_name = product["product_name"]
+            product_id = product["code"]
             cat_name = product["categories"].split(",")
             for cat in cat_name:
-                if "de:" not in cat and "en:" not in cat:
-                    self.db.query("INSERT IGNORE INTO product_category(product_id, category_id) "
-                                  "VALUES((SELECT id FROM product "
-                                  "WHERE name=:product_name), (SELECT id "
-                                  "FROM category WHERE name=:cat_name))",
-                                  product_name=product_name, cat_name=cat.replace("fr:", ""))
+                # if "de:" not in cat and "en:" not in cat:
+                self.db.query("INSERT IGNORE INTO product_category(product_id, category_id) "
+                              "VALUES(:product_id, (SELECT id "
+                              "FROM category WHERE name=:cat_name))",
+                              product_id=product_id, cat_name=cat.replace("fr:", ""))
 
     def insert_product_store(self, products):
         for product in products:
-            product_name = product["product_name"]
+            product_id = product["code"]
             store_name = product["stores"].split(",")
             for store in store_name:
                 self.db.query("INSERT IGNORE INTO product_store(product_id, store_id) "
-                              "VALUES((SELECT id "
-                              "FROM product "
-                              "WHERE name=:product_name), "
+                              "VALUES(:product_id, "
                               "(SELECT store_id "
                               "FROM store "
-                              "WHERE store_name=:store_name))", product_name=product_name, store_name=store)
+                              "WHERE store_name=:store_name))", product_id=product_id, store_name=store)
 
     def insert_all_tables(self, products):
         self.insert_nutriscore(products)

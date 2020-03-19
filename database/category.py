@@ -38,5 +38,5 @@ class Category:
 
 
 if __name__ == '__main__':
-    get_prod_by_cat = Category(db, "Produits Laitiers")
+    get_prod_by_cat = Category(db, "Epicerie")
     get_prod_by_cat.show_products()

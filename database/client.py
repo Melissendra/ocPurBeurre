@@ -9,6 +9,7 @@ class ProductFetcher:
         self.page_size = page_size
 
     def fetch_products(self):
+        products = []
         for category in self.categories:
             parameters = {
                 "action": "process",
@@ -21,8 +22,7 @@ class ProductFetcher:
             }
             r = requests.get(c.URL, parameters)
             data = r.json()["products"]
-            products = []
             for product in data:
                 product["categories"] = f"{category}, {product['categories']}"
                 products.append(product)
-            return products
+        return products

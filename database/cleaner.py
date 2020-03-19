@@ -17,7 +17,6 @@ class Cleaner:
     @staticmethod
     def is_valid(product):
         for tag in c.TAGS:
-
             if tag not in product:
                 return False
             else:
