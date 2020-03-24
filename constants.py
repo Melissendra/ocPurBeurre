@@ -7,7 +7,7 @@ CATEGORIES_LIST = [
     "Dessert",
     "Pizza",
     "Produits Laitiers",
-    "Viandes"
+    "Boissons"
     ]
 
 TAGS = [

@@ -2,6 +2,7 @@ from .stateMachine import StateMachine
 from .menu import Menu
 from database.category import Category
 from database.substitutes import Substitute
+from database.product import Product
 import records
 import constants as c
 import logging
@@ -26,16 +27,6 @@ class App(StateMachine):
             .add("q", "Quitter", self.handle_quit)
             .render()
         )
-
-    # def handle_option1(self, entry, history):
-    #     logger.debug("entry vaut %s", entry)
-    #     return(
-    #         Menu("Quel aliment remplacer?")
-    #         .add("1", "Sélectionner la catégorie", self.handle_category_option)
-    #         .add("a", "Accueil", self.handle_start)
-    #         .add("q", "Quitter", self.handle_quit)
-    #         .render()
-    #     )
 
     def handle_category_option(self, entry, history):
         logger.debug("entry vaut %s", entry)
@@ -69,10 +60,28 @@ class App(StateMachine):
         for n, r in enumerate(rows):
             product_name = r.name
             nutriscore = r.nutriscore_letter
-            substitute_menu.add(f"{n+1}", f"{product_name}, {nutriscore}", self.save_product)
+            link = r.link
+            store = r.store_name
+            substitute_menu.add(f"{n+1}", f"{product_name}, {link}, {store}, {nutriscore}", self.save_product)
         substitute_menu.add("a", "Retour à l'accueil", self.handle_start)\
             .add("q", "Quitter", self.handle_quit)
         return substitute_menu.render()
+
+    # def select_substitutes(self, entry, history):
+    #     entry = history[-1].split(', ')[0]
+    #     prod_substitute = Product(db, f"{entry}")
+    #     rows = prod_substitute.get_product_info()
+    #     prod_menu = Menu(f"{entry}")
+    #     for r in rows:
+    #         prod_name = r.name
+    #         prod_link = r.link
+    #         prod_store = r.store
+    #         prod_menu.add("1", f"{prod_name}, {prod_link}, {prod_store}", self.save_product)\
+    #             .add("2", "Retour choix produits subsitués", self.handle_product_substitutes)\
+    #             .add("3", "Retour à la liste des catégories", self.handle_category_option)
+    #     prod_menu.add("a", "Accueil", self.handle_start)\
+    #         .add("q", "Quitter", self.handle_quit)
+    #     return prod_menu.render()
 
     def save_product(self, entry, history):
         pass
