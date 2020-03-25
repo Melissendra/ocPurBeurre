@@ -25,3 +25,4 @@ class Category:
                              "LIMIT 20", cat_name=cat_name)
         return rows
 
+
