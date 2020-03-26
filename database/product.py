@@ -10,11 +10,13 @@ class Product:
 
     def get_product_info(self):
         prod_name = self.product_name
-        rows = self.db.query("SELECT product.name, product.link, store.store_name "
+        rows = self.db.query("SELECT product.name, product.link, store.store_name, nutriscore.nutriscore_letter "
                              "FROM product "
                              "INNER JOIN product_store "
                              "ON product_store.product_id = product.id "
                              "INNER JOIN store "
                              "ON product_store.store_id = store.store_id "
+                             "INNER JOIN nutriscore "
+                             "ON product.nutriscore_id = nutriscore.id "
                              "WHERE product.name = :prod_name ", prod_name=prod_name)
         return rows
