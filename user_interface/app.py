@@ -44,18 +44,21 @@ class App(StateMachine):
         for n, r in enumerate(rows):
             product_name = r.name
             # product_link = r.link
-            # nutriscore = r.nutriscore_letter
-            products_menu.add(f"{n+1}", f"{product_name}", self.show_description)
+            nutriscore = r.nutriscore_letter
+            products_menu.add(f"{n+1}", f"{product_name}. {nutriscore}", self.handle_product_substitutes)
         products_menu.add("a", "Retour à l'acceuil", self.handle_start)\
             .add("q", "Quitter", self.handle_quit)
         return products_menu.render()
 
     def handle_product_substitutes(self, entry, history):
         logger.debug("entry vaut %s", entry)
-        entry = history[-3]
-        prod_substitute = Manager(db, f"{entry}")
+        new_entry = f"{history[-1]}"
+        logger.debug(new_entry)
+        name = new_entry.split(". ")[0]
+        print(name)
+        prod_substitute = Manager(db, f"{name}")
         rows = prod_substitute.get_substitute()
-        substitute_menu = Menu(f"Produits ayant un meilleur nutriscore que {entry}")
+        substitute_menu = Menu(f"Produits ayant un meilleur nutriscore que {name}")
         for n, r in enumerate(rows):
             product_name = r.name
             nutriscore = r.nutriscore_letter
