@@ -7,8 +7,9 @@ class Menu:
         choices(dict): dictionary having the choices options for the user
     """
 
-    def __init__(self, title):
+    def __init__(self, name, title):
         """Initialization of the Menu"""
+        self.name = name
         self.title = title
         self.choices = {}
 
