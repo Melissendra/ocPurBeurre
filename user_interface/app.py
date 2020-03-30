@@ -43,7 +43,7 @@ class App(StateMachine):
 
     def handle_category_option(self, entry, history):
         logger.debug("entry vaut %s", entry)
-        cat_menu = Menu("Catégories", "Catégories")
+        cat_menu = Menu("Categories", "Catégories")
         for i, category in enumerate(c.CATEGORIES_LIST):
             cat_menu.add(f"{i+1}", f"{category}",
                          self.show_products_by_category)
@@ -64,7 +64,7 @@ class App(StateMachine):
 
     def handle_product_substitutes(self, entry, history):
         logger.debug("entry vaut %s", entry)
-        category = history.get("Catégories")
+        category = history.get("Categories")
         product = history.get("Products")
         prod_substitute = Substitute(db, category)
         rows = prod_substitute.get_substitute()
@@ -86,19 +86,19 @@ class App(StateMachine):
             prod_link = r.link
             prod_store = r.store_name
             prod_nutriscore = r.nutriscore_letter
-            prod_menu.add("1", f"{prod_name}. {prod_link}. Magasin: {prod_store}. Nutriscore: {prod_nutriscore}", self.save_product)\
+            prod_menu.add("1", f"{prod_name}. {prod_link}. Magasin: {prod_store}. Nutriscore: {prod_nutriscore}",
+                          self.save_product)\
                 .add("2", "Retour à la liste des produits", self.last_menu)\
                 .add("3", "Menu categorie", self.handle_category_option)
         prod_menu.add("a", "Accueil", self.handle_start).add("q", "Quitter", self.handle_quit)
         return prod_menu.render()
 
     def last_menu(self, entry, history):
-        print(f"{history[1]}")
-        new_entry = f"{history[-4]}"
-        new_name = new_entry.split(". ")[0]
-        sub_menu = Substitute(db, new_entry)
+        product = history.get("Substitutes")
+        category = history.get("Categories")
+        sub_menu = Substitute(db, category)
         rows = sub_menu.get_substitute()
-        substitute_menu = Menu("Last", f"Produits ayant un meilleur nutriscore que {new_name}")
+        substitute_menu = Menu("Last", f"Produits ayant un meilleur nutriscore que {product.name}")
         for n, r in enumerate(rows):
             product_name = r.name
             nutriscore = r.nutriscore_letter
@@ -110,10 +110,15 @@ class App(StateMachine):
     def save_product(self, entry, history):
         origin_prod = history.get("Products")
         sub_prod = history.get("Substitutes")
-
+        # product = history.get("Description")
         saver_obj = Favorite(db)
         saver = saver_obj.save_favorite(origin_prod, sub_prod)
-        # return saver
+        save_menu = Menu("Save", f"Vous avez saugardé {sub_prod.name}")\
+            .add("1", "Retour à la liste des catégories", self.handle_category_option)\
+            .add("2", "Retour à la liste des produits substitutés", self.handle_product_substitutes)\
+            .add("a", "Retour à l'accueil", self.handle_start)\
+            .add("q", "Quitter", self.handle_quit)
+        return save_menu.render()
 
     def show_favorites(self, entry, history):
         fav = Favorite(db)

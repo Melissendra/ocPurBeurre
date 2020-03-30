@@ -9,7 +9,7 @@ class Product:
         self.product = product
 
     def get_product_info(self):
-        prod= self.product
+        prod = self.product
         rows = self.db.query("SELECT product.name, product.link, store.store_name, nutriscore.nutriscore_letter "
                              "FROM product "
                              "INNER JOIN product_store "

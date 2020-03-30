@@ -4,10 +4,8 @@ db = records.Database()
 
 
 class Favorite:
-    def __init__(self, db ):
+    def __init__(self, db):
         self.db = db
-        # self.origin_prod = origin_prod
-        # self.sub_prod = sub_prod
 
     def save_favorite(self, origin_prod, sub_prod):
         self.db.query("INSERT INTO favorite(product_original_id, product_substitute_id)"
@@ -15,7 +13,9 @@ class Favorite:
                        , origin_prod=origin_prod.id, sub_prod=sub_prod.id)
 
     def show_favorite(self):
-        rows = self.db.query("SELECT product.id, product.name, product.link, nutriscore.nutriscore_letter, store.store_name "
+        rows = self.db.query("SELECT sub_prod.id, sub_prod.name, sub_prod.link, "
+                             "sub_prod_nutriscore.nutriscore_letter, "
+                             "GROUP_CONCAT(store.store_name SEPARATOR ', ') AS store_name "
                              "FROM favorite "
                              "INNER JOIN product AS origin_prod "
                              "ON favorite.product_original_id = origin_prod.id "
@@ -26,9 +26,12 @@ class Favorite:
                              "INNER JOIN store "
                              "ON product_store.store_id = store.store_id "
                              "INNER JOIN nutriscore AS origin_prod_nutriscore "
-                             "ON favorite.product_original_id = origin_prod_nutriscore.id "
-                             "WHERE favorite.product_substitute_id = favorite.product_original_id")
+                             "ON origin_prod.nutriscore_id = origin_prod_nutriscore.id "
+                             "INNER JOIN nutriscore AS sub_prod_nutriscore "
+                             "ON sub_prod.nutriscore_id = sub_prod_nutriscore.id "
+                             "GROUP BY sub_prod.id ")
         return rows
 
     def delete_favorite(self):
         self.db.query("DELETE FROM favorite")
+
