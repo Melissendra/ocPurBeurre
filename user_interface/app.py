@@ -4,6 +4,8 @@ from database.product_by_cat import Manager
 from database.substitute import Substitute
 from database.product import Product
 from database.favorite import Favorite
+from .product_model import ProductModel
+from .product_description import ProductDescription
 import records
 import constants as c
 import logging
@@ -12,18 +14,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 db = records.Database()
-
-
-class ProductModel:
-    def __init__(self, id, name, link, nutriscore):
-        self.id = id
-        self.name = name
-        self.link = link
-        self.nutriscore = nutriscore
-
-    def __str__(self):
-        return f"{self.name}. {self.nutriscore}"
-
 
 
 class App(StateMachine):
@@ -82,12 +72,8 @@ class App(StateMachine):
         rows = prod_sub.get_product_info()
         prod_menu = Menu("Description", f"{product.name}")
         for r in rows:
-            prod_name = r.name
-            prod_link = r.link
-            prod_store = r.store_name
-            prod_nutriscore = r.nutriscore_letter
-            prod_menu.add("1", f"{prod_name}. {prod_link}. Magasin: {prod_store}. Nutriscore: {prod_nutriscore}",
-                          self.save_product)\
+            product_description = ProductDescription(r.id, r.name, r.link, r.store_name, r.nutriscore_letter)
+            prod_menu.add("1", product_description, self.save_product)\
                 .add("2", "Retour à la liste des produits", self.last_menu)\
                 .add("3", "Menu categorie", self.handle_category_option)
         prod_menu.add("a", "Accueil", self.handle_start).add("q", "Quitter", self.handle_quit)
