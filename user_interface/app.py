@@ -1,17 +1,13 @@
 from .stateMachine import StateMachine
 from .menu import Menu
+from .product_model import ProductModel
+from .product_description import ProductDescription
 from database.product_by_cat import Manager
 from database.substitute import Substitute
 from database.product import Product
 from database.favorite import Favorite
-from .product_model import ProductModel
-from .product_description import ProductDescription
 import records
 import constants as c
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 db = records.Database()
 
@@ -20,7 +16,7 @@ class App(StateMachine):
     """Class for the creation of a succession of menus"""
 
     def handle_start(self, entry=None, history=None):
-        logger.debug("entry vaut %s", entry)
+        """ Function to display the Welcome Menu and ask the first choices """
         return(
             Menu("Accueil", "Accueil")
             .add("1", "Quel aliment souhaitez-vous remplacer?",
@@ -32,7 +28,9 @@ class App(StateMachine):
         )
 
     def handle_category_option(self, entry, history):
-        logger.debug("entry vaut %s", entry)
+        """ Function to display the categories' choices
+            The user need to enter a number to enter the category's products
+        """
         cat_menu = Menu("Categories", "Catégories")
         for i, category in enumerate(c.CATEGORIES_LIST):
             cat_menu.add(f"{i+1}", f"{category}",
@@ -41,10 +39,11 @@ class App(StateMachine):
         return cat_menu.render()
 
     def show_products_by_category(self, entry, history):
-        logger.debug("entry vaut %s", entry)
+        """The function display 20 randoms products within the chosen category """
         cat = Manager(db, entry.item)
         rows = cat.get_product_by_category()
-        products_menu = Menu("Products", f"{entry} >>> Produits ayant un nutriscore de c à e. Pour plus d'infos sélectionnez le produit qui vous interesse.")
+        products_menu = Menu("Products", f"{entry} >>> Produits ayant un nutriscore de c à e. "
+                                         f"Pour plus d'infos sélectionnez le produit qui vous interesse.")
         for n, r in enumerate(rows):
             product = ProductModel(r.id, r.name, r.link, r.nutriscore_letter)
             products_menu.add(f"{n+1}", product, self.handle_product_substitutes)
@@ -53,7 +52,6 @@ class App(StateMachine):
         return products_menu.render()
 
     def handle_product_substitutes(self, entry, history):
-        logger.debug("entry vaut %s", entry)
         category = history.get("Categories")
         product = history.get("Products")
         prod_substitute = Substitute(db, category)

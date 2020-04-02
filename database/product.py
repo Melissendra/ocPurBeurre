@@ -4,11 +4,17 @@ db = records.Database()
 
 
 class Product:
-    def __init__(self, db, product):
-        self.db = db
+    """
+        Class to get all the information of the product to display it when the user choose a product substitute
+    """
+
+    def __init__(self, database, product):
+        """Initialization of the product class """
+        self.db = database
         self.product = product
 
     def get_product_info(self):
+        """ Function to get the information in the purbeurre database """
         prod = self.product
         rows = self.db.query("SELECT product.id, product.name, product.link, store.store_name, "
                              "nutriscore.nutriscore_letter "
