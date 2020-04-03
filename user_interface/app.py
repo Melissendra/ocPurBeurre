@@ -39,7 +39,7 @@ class App(StateMachine):
         return cat_menu.render()
 
     def show_products_by_category(self, entry, history):
-        """The function display 20 randoms products within the chosen category """
+        """The function display 20 randoms products within the chosen category with a nutriscore between c and e"""
         cat = Manager(db, entry.item)
         rows = cat.get_product_by_category()
         products_menu = Menu("Products", f"{entry} >>> Produits ayant un nutriscore de c à e. "
@@ -52,6 +52,7 @@ class App(StateMachine):
         return products_menu.render()
 
     def handle_product_substitutes(self, entry, history):
+        """ Function to suggest healthier products to the user. Their nutriscore will be a or b"""
         category = history.get("Categories")
         product = history.get("Products")
         prod_substitute = Substitute(db, category)
@@ -65,6 +66,10 @@ class App(StateMachine):
         return substitute_menu.render()
 
     def show_description(self, entry, history):
+        """
+            Function to show all the information of the chosen product: name, link, store where the user can find it,
+            and its nutriscore.
+         """
         product = history.get("Substitutes")
         prod_sub = Product(db, product)
         rows = prod_sub.get_product_info()
@@ -78,6 +83,7 @@ class App(StateMachine):
         return prod_menu.render()
 
     def last_menu(self, entry, history):
+        """Function to authorize the user to return to the substitute products if he wants to chose another one"""
         product = history.get("Substitutes")
         category = history.get("Categories")
         sub_menu = Substitute(db, category)
