@@ -28,6 +28,9 @@ The program fetch the product from OpenFoodFacts and put it in the database. The
 
 ## How to install your environment to use the app:
 1. Clone file:  git@github.com:Melissendra/ocPurBeurre.git
-2. Inside ocPurBeurre directory, do "*pipenv install*", to install all the requeriments: python 3.8.2, records, requests, mysql-connector-python, flake8 contain in the pipfile
+2. Create a database in your local environment.
+3. To link it to the app create in ocprubeurre program a *.env* file
+4. In it write: DATABASE_URL = mysql+mysqlconnector://user_name:mot_de_passe!@localhost:3306/nom_de_la_base_de_données?charset=utf8mb4
+2. Then inside ocPurBeurre directory in your terminal, do "*pipenv install*", to install all the requeriments: python 3.8.2, records, requests, mysql-connector-python, flake8 contain in the pipfile
 3. Do "*pipenv shell*"to activate the virtual environment
 4. Do *python -m main* to launch the app and choose.
