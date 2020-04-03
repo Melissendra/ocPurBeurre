@@ -4,14 +4,24 @@ db = records.Database()
 
 
 class Substitute:
-    def __init__(self, db, cat_name):
-        self.db = db
+    """
+        Class to get healthier product based on the category of the original product.
+        All products will be with a nutriscore of a or b
+        Attributes:
+            database: link to the database
+            cat_name(str): it's the category by which we select our products
+    """
+    def __init__(self, database, cat_name):
+        """ Initialization of the class substitutes """
+        self.db = database
         self.cat_name = cat_name
 
     def get_substitute(self):
+        """ Requests to get 10 random  products to show it in a menu """
         cat_name = self.cat_name
         rows = self.db.query("SELECT product.id, product.name, product.link, "
-                             "nutriscore.nutriscore_letter, GROUP_CONCAT(store.store_name SEPARATOR ', ') AS store_name "
+                             "nutriscore.nutriscore_letter, "
+                             "GROUP_CONCAT(store.store_name SEPARATOR ', ') AS store_name "
                              "FROM product "
                              "INNER JOIN nutriscore "
                              "ON product.nutriscore_id = nutriscore.id "

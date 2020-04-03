@@ -8,5 +8,5 @@ class ProductModel:
         self.nutriscore = nutriscore
 
     def __str__(self):
-        """ function to determine how to display the information we want and what exactly we want """
-        return f"{self.name}. {self.nutriscore}"
+        """ Method to determine how to display the information we want and what exactly we want """
+        return f"{self.name}. Nutriscore: {self.nutriscore}"

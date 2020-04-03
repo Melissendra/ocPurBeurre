@@ -9,6 +9,7 @@ class ProductFetcher:
         self.page_size = page_size
 
     def fetch_products(self):
+        """ Method to fetch the products sorted by some parameters """
         products = []
         for category in self.categories:
             parameters = {

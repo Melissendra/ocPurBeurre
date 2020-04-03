@@ -10,6 +10,6 @@ class ProductDescription(ProductModel):
     def __str__(self):
         """ How we format the information's display"""
         return f"{self.name}. \n\t" \
-               f" {self.link}. \n\t  " \
+               f" {self.link}. \n\t" \
                f" Magasin: {self.store}. \n\t" \
                f" Nutriscore: {self.nutriscore}"

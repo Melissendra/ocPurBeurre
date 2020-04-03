@@ -4,15 +4,24 @@ db = records.Database()
 
 
 class Favorite:
-    def __init__(self, db):
-        self.db = db
+    """
+        class to save into the table favorite and get from it the product chosen by the user
+        Attributes:
+            database: we link the class to the database
+    """
+
+    def __init__(self, database):
+        """ Initialization of the class favorite """
+        self.db = database
 
     def save_favorite(self, origin_prod, sub_prod):
+        """ Method to allow the insertion of the products chosen and save by the user """
         self.db.query("INSERT INTO favorite(product_original_id, product_substitute_id)"
                       "VALUES( :origin_prod, :sub_prod) "
-                       , origin_prod=origin_prod.id, sub_prod=sub_prod.id)
+                      , origin_prod=origin_prod.id, sub_prod=sub_prod.id)
 
     def show_favorite(self):
+        """ Method that get all the needed information from the database to display it in a menu """
         rows = self.db.query("SELECT sub_prod.id, sub_prod.name, sub_prod.link, "
                              "sub_prod_nutriscore.nutriscore_letter, "
                              "GROUP_CONCAT(store.store_name SEPARATOR ', ') AS store_name "
@@ -33,5 +42,5 @@ class Favorite:
         return rows
 
     def delete_favorite(self):
+        """Method to delete all the data in the table favorite"""
         self.db.query("DELETE FROM favorite")
-

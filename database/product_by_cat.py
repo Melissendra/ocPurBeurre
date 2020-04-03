@@ -3,13 +3,20 @@ import records
 db = records.Database()
 
 
-class Manager:
-
-    def __init__(self, db, cat_name):
-        self.db = db
+class ProductByCategory:
+    """
+        Class to get products by category
+        Attributes:
+            database: link the class to the database
+            cat_name:
+    """
+    def __init__(self, database, cat_name):
+        """ Initialization of ProductByCategory class """
+        self.db = database
         self.cat_name = cat_name
 
     def get_product_by_category(self):
+        """ Request made to get 20 random products with an nutriscore to up or equal at c """
         cat_name = self.cat_name
         rows = self.db.query("SELECT product.id, product.name, product.link, nutriscore.nutriscore_letter " 
                              "FROM product "

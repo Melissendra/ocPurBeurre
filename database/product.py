@@ -14,7 +14,7 @@ class Product:
         self.product = product
 
     def get_product_info(self):
-        """ Function to get the information in the purbeurre database """
+        """ Method to get the information in the purbeurre database """
         prod = self.product
         rows = self.db.query("SELECT product.id, product.name, product.link, store.store_name, "
                              "nutriscore.nutriscore_letter "
