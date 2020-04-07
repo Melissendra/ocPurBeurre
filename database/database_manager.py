@@ -103,7 +103,8 @@ class ProductsManager:
         self.insert_product_store(products)
         self.insert_product_cat(products)
 
-    def install_database(self):
+    @staticmethod
+    def install_database():
         api = client.ProductFetcher()
         products = api.fetch_products()
         cleaning = cleaner.Cleaner()

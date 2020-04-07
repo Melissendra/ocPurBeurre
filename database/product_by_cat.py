@@ -8,7 +8,7 @@ class ProductByCategory:
         Class to get products by category
         Attributes:
             database: link the class to the database
-            cat_name:
+            cat_name: it's a string that designates the category by which we'll find the product
     """
     def __init__(self, database, cat_name):
         """ Initialization of ProductByCategory class """
